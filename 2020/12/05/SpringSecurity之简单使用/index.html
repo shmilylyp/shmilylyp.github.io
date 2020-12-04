@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SpringSecurity之简单使用 | shmilylyp's life</title><meta name="keywords" content="java SpringSecurity"><meta name="author" content="shmilylyp"><meta name="copyright" content="shmilylyp"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="自定义页面在这里我使用的是thymeleaf模版，就不考虑前后端分离的场景了 首先，我们先把thymeleaf的依赖引入进来 1234&lt;dependency&gt;    &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringSecurity之简单使用">
+<meta property="og:url" content="https://shmilylyp.github.io/2020/12/05/SpringSecurity%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="shmilylyp&#39;s life">
+<meta property="og:description" content="自定义页面在这里我使用的是thymeleaf模版，就不考虑前后端分离的场景了 首先，我们先把thymeleaf的依赖引入进来 1234&lt;dependency&gt;    &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-04T18:19:49.000Z">
+<meta property="article:modified_time" content="2020-12-04T19:46:35.878Z">
+<meta property="article:author" content="shmilylyp">
+<meta property="article:tag" content="java SpringSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/favicon.png"><link rel="canonical" href="https://shmilylyp.github.io/2020/12/05/SpringSecurity%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-05 03:46:35'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/atrchives/"><div class="headline">文章</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives"><span> 分类</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">shmilylyp's life</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives"><span> 分类</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">SpringSecurity之简单使用</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-04T18:19:49.000Z" title="发表于 2020-12-05 02:19:49">2020-12-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-04T19:46:35.878Z" title="更新于 2020-12-05 03:46:35">2020-12-05</time></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="自定义页面"><a href="#自定义页面" class="headerlink" title="自定义页面"></a>自定义页面</h3><p>在这里我使用的是thymeleaf模版，就不考虑前后端分离的场景了</p>
+<p>首先，我们先把thymeleaf的依赖引入进来</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后我们在resources/templates中建立三个简单的页面index.html、home.html和error.html,如下：</p>
+<blockquote>
+<p>Login.html</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.w3.org/1999/xhtml&quot;</span> <span class="attr">xmlns:th</span>=<span class="string">&quot;http://www.thymeleaf.org&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>登录<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>登录管理<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">th:action</span>=<span class="string">&quot;@&#123;/login.do&#125;&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span>&gt;</span></span><br><span class="line">    账号：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    密码：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;password&quot;</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;checkbox&quot;</span> <span class="attr">value</span>=<span class="string">&quot;1&quot;</span> <span class="attr">name</span>=<span class="string">&quot;remember-me&quot;</span>&gt;</span>记住我<span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;登录&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Home.html</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>首页<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>error.html</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>错误页面<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>接着创建一个controller，用于请求</p>
+<blockquote>
+<p>BaseController</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/login.html&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">login</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;/login.html&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/home.html&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">home</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;/home.html&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/error.html&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">error</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;/error.html&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">base</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;/home.html&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>基本工作都做好了。那我们就该思考怎么样才能让它走我们自定义的页面呢。按照惯性思维，我们应该去配置文件中去修改，这样的话才能覆盖掉SpringSecurity自定义的页面。说做就做，我们看看应该怎么才能替换成我们自己的页面。</p>
+<p>在<a href="https://shmilylyp.github.io/2020/12/02/SpringSecurity%E5%88%9D%E4%BD%93%E9%AA%8C/">SpringSecurity初体验</a>中我们已经了解到我们请求inde.html进不去被拦截后会生成自定义的登录页面，也就是在DefaultLoginPageGeneratingFilter这个拦截器生成的。而这些拦截器的配置，主要是在这里进行配置的，如下图：</p>
+<p><img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.02.18.png" alt="截屏2020-12-05 上午3.02.18"></p>
+<p>其中，SecurityFilterChain.class的主要作用是获取拦截器的信息，配置是在WebSecurityConfigurerAdapter.class中进行的。因此我们需要重写这个类，在这个类的重写类中配置就可以了。如下代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyWebSecurityConfiguration</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> IUserService iUserService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBuilder auth)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        auth.inMemoryAuthentication()</span><br><span class="line">                .withUser(<span class="string">&quot;shmilylyp&quot;</span>)</span><br><span class="line">                .password(<span class="string">&quot;&#123;noop&#125;123&quot;</span>)  <span class="comment">// noop设置为密码不加密，没有的话，需要加密</span></span><br><span class="line">                .authorities(<span class="string">&quot;ADMIN&quot;</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        http.authorizeRequests()  <span class="comment">// 设置那些页面可以直接访问，那些需要验证</span></span><br><span class="line">                .antMatchers(<span class="string">&quot;/login.html&quot;</span>, <span class="string">&quot;/error.html&quot;</span>).permitAll() <span class="comment">// 统统放过</span></span><br><span class="line">                .anyRequest().authenticated() <span class="comment">// 剩下的都需要认证才能访问</span></span><br><span class="line">                .and().formLogin().loginPage(<span class="string">&quot;/login.html&quot;</span>)  <span class="comment">// 指定登录页面</span></span><br><span class="line">                .loginProcessingUrl(<span class="string">&quot;/login.do&quot;</span>)  <span class="comment">// 处理认证逻辑的请求</span></span><br><span class="line">                .defaultSuccessUrl(<span class="string">&quot;/home.html&quot;</span>)  <span class="comment">// 认证成功后默认跳转的页面</span></span><br><span class="line">                .failureForwardUrl(<span class="string">&quot;/error.html&quot;</span>) <span class="comment">// 发生错误时跳转的页面</span></span><br><span class="line">                .and().logout().logoutUrl(<span class="string">&quot;/logout&quot;</span>)</span><br><span class="line">                .logoutSuccessUrl(<span class="string">&quot;/login.html&quot;</span>);  <span class="comment">// 退出登录时的操作</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后我们在浏览器中输入网址，就可以看到我们自己的登录页面了，并且使用配置的user和password进行登录。</p>
+<p><img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.12.36.png" alt="截屏2020-12-05 上午3.12.36"></p>
+<p>使用配置的用户名密码进行登录<img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.13.36.png" alt="截屏2020-12-05 上午3.13.36"></p>
+<p><img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.13.56.png" alt="截屏2020-12-05 上午3.13.56"></p>
+<h3 id="配置数据库的用户名密码"><a href="#配置数据库的用户名密码" class="headerlink" title="配置数据库的用户名密码"></a>配置数据库的用户名密码</h3><p>这时候肯定会有人疑惑啦，我的密码不能写死啊，应该从数据库中进行查询的，不然怎么使用。这个当然可以啦。我们继续研究。</p>
+<p><img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.18.29.png" alt="截屏2020-12-05 上午3.18.29"></p>
+<p>在这个AuthenticationManagerBuilder中我们可以看到它还可以使用userDetailsService这个方法进行配置。从名字来看，这个方法应该就符合我们的要求。那我们怎么才能用它查询我们的用户信息呢，当然是实现他的接口，然后覆盖他的方法啦。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IUserService</span> <span class="keyword">extends</span> <span class="title">UserDetailsService</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">IUserService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 实现自定义的认证流程</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> s</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> UsernameNotFoundException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> UserDetails <span class="title">loadUserByUsername</span><span class="params">(String s)</span> <span class="keyword">throws</span> UsernameNotFoundException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="string">&quot;shmilylyp&quot;</span>.equals(s)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        List&lt;GrantedAuthority&gt; authorities = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        GrantedAuthority auth = <span class="keyword">new</span> SimpleGrantedAuthority(<span class="string">&quot;ROLE_ADMIN&quot;</span>);</span><br><span class="line">        authorities.add(auth);</span><br><span class="line">        <span class="comment">// pwd:123456</span></span><br><span class="line">        UserDetails userDetails = <span class="keyword">new</span> User(s, <span class="string">&quot;$2a$10$qevpHDwZr6yMgZBI6yw5ze4alucSZ.5dzvqaWmd/torLHVp.zX3cC&quot;</span>, authorities);</span><br><span class="line">        <span class="keyword">return</span> userDetails;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我这里的密码是进行过加密的，使用它自带的方法。我们实现自己的逻辑后，然后去配置类中修改一下配置。修改成如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBuilder auth)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">/*auth.inMemoryAuthentication()</span></span><br><span class="line"><span class="comment">                .withUser(&quot;shmilylyp&quot;)</span></span><br><span class="line"><span class="comment">                .password(&quot;&#123;noop&#125;123&quot;)  // noop设置为密码不加密，没有的话，需要加密</span></span><br><span class="line"><span class="comment">                .authorities(&quot;ADMIN&quot;);*/</span></span><br><span class="line">        auth.userDetailsService(iUserService).passwordEncoder(bCryptPasswordEncoder);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的passwordEncoder(bCryptPasswordEncoder)是用来加密密码的。这样使用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> BCryptPasswordEncoder <span class="title">passwordEncoder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BCryptPasswordEncoder();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        BCryptPasswordEncoder encoder = <span class="keyword">new</span> BCryptPasswordEncoder();</span><br><span class="line">        System.out.println(encoder.encode(<span class="string">&quot;shmilylyp&quot;</span>));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后@Autowired进来就可以了。这样，就可以实现动态的从数据库中查询用户密码了。</p>
+<h3 id="添加权限"><a href="#添加权限" class="headerlink" title="添加权限"></a>添加权限</h3><p>我们使用SpringSecurty主要是为了使用它的权限设置，当然不能少了这一块。按照国际惯例，我们也需要配置一下权限的信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> PersistentTokenRepository <span class="title">tokenRepository</span><span class="params">(DataSource dataSource)</span> </span>&#123;</span><br><span class="line">        JdbcTokenRepositoryImpl repository = <span class="keyword">new</span> JdbcTokenRepositoryImpl();</span><br><span class="line">        repository.setDataSource(dataSource);</span><br><span class="line">        <span class="comment">// 第一次帮我们创建表结构，后面就不需要了</span></span><br><span class="line">        repository.setCreateTableOnStartup(<span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">return</span> repository;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用的话，有注解和配置的方式。这里就不说配置的了，一般也很少用到。直接说配置吧。</p>
+<p>首先我们需要在启动类中加入@EnableGlobalMethodSecurity这个注解。</p>
+<p><img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.31.38.png" alt="截屏2020-12-05 上午3.31.38"></p>
+<p>我们点击这个注解可以看到它有3种方式的注解，我们可以任意选择一种。因此我们需要在@EnableGlobalMethodSecurity后面添加对应的属性。@EnableGlobalMethodSecurity(jsr250Enabled = true)这个样子。<img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.32.18.png" alt="截屏2020-12-05 上午3.32.18"></p>
+<blockquote>
+<p>三种注解不同的使用方式</p>
+</blockquote>
+<ul>
+<li>prePostEnabled</li>
+</ul>
+<p><img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.38.15.png" alt="截屏2020-12-05 上午3.38.15"></p>
+<p><img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.40.29.png" alt="截屏2020-12-05 上午3.40.29"></p>
+<ul>
+<li>securedEnabled</li>
+<li>![截屏2020-12-05 上午3.41.01](/Users/gaoshuai/Library/Application Support/typora-user-images/截屏2020-12-05 上午3.41.01.png)</li>
+</ul>
+<p><img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.43.12.png" alt="截屏2020-12-05 上午3.43.12"></p>
+<p>ROLE_这个前缀是需要添加的</p>
+<ul>
+<li>jsr250Enabled</li>
+</ul>
+<p><img src="https://gitee.com/shmilylyp/document/raw/markdown-picture/2020/%E6%88%AA%E5%B1%8F2020-12-05%20%E4%B8%8A%E5%8D%883.45.52.png" alt="截屏2020-12-05 上午3.45.52"></p>
+<p>OK这样我们就可以控制请求的权限问题了。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">shmilylyp</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shmilylyp.github.io/2020/12/05/SpringSecurity%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">https://shmilylyp.github.io/2020/12/05/SpringSecurity%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shmilylyp.github.io" target="_blank">shmilylyp's life</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/java-SpringSecurity/">java SpringSecurity</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/12/02/SpringSecurity%E5%88%9D%E4%BD%93%E9%AA%8C/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SpringSecurity初体验</div></div></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/null" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">shmilylyp</div><div class="author-info__description">shmilylyp的五味生活</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/atrchives/"><div class="headline">文章</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A1%B5%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">自定义页面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">配置数据库的用户名密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E6%9D%83%E9%99%90"><span class="toc-number">3.</span> <span class="toc-text">添加权限</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2020/12/05/SpringSecurity%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" title="SpringSecurity之简单使用"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringSecurity之简单使用"/></a><div class="content"><a class="title" href="/2020/12/05/SpringSecurity%E4%B9%8B%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" title="SpringSecurity之简单使用">SpringSecurity之简单使用</a><time datetime="2020-12-04T18:19:49.000Z" title="发表于 2020-12-05 02:19:49">2020-12-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/02/SpringSecurity%E5%88%9D%E4%BD%93%E9%AA%8C/" title="SpringSecurity初体验"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringSecurity初体验"/></a><div class="content"><a class="title" href="/2020/12/02/SpringSecurity%E5%88%9D%E4%BD%93%E9%AA%8C/" title="SpringSecurity初体验">SpringSecurity初体验</a><time datetime="2020-12-02T15:15:38.000Z" title="发表于 2020-12-02 23:15:38">2020-12-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/" title="设计模式之原型模式"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式之原型模式"/></a><div class="content"><a class="title" href="/2020/11/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/" title="设计模式之原型模式">设计模式之原型模式</a><time datetime="2020-11-28T19:59:49.000Z" title="发表于 2020-11-29 03:59:49">2020-11-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/11/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" title="设计模式之单例模式"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式之单例模式"/></a><div class="content"><a class="title" href="/2020/11/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" title="设计模式之单例模式">设计模式之单例模式</a><time datetime="2020-11-27T16:12:03.000Z" title="发表于 2020-11-28 00:12:03">2020-11-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/11/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" title="设计模式之工厂模式"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式之工厂模式"/></a><div class="content"><a class="title" href="/2020/11/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" title="设计模式之工厂模式">设计模式之工厂模式</a><time datetime="2020-11-26T14:37:00.000Z" title="发表于 2020-11-26 22:37:00">2020-11-26</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By shmilylyp</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>
